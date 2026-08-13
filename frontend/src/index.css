@@ -1,0 +1,65 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand: #ff6b81;
+  --color-brand-light: #ffb8c6;
+  --color-bg: #fff5f5;
+  --color-ink: #2d2d2d;
+  --color-ink-muted: #8e8e93;
+  --color-warn: #ffb020;
+  --font-sans: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+:root {
+  color: var(--color-ink);
+  background: var(--color-bg);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  min-height: 100svh;
+  background: var(--color-bg);
+}
+
+#root {
+  min-height: 100svh;
+}
+
+/* 移动端优先：整体内容容器 */
+.page {
+  max-width: 480px;
+  margin: 0 auto;
+  min-height: 100svh;
+  padding: 20px 16px 40px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 触摸友好：按钮至少 44px */
+.btn-touch {
+  min-height: 48px;
+}
+
+/* 骨架屏 shimmer */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    #f3e3e7 25%,
+    #fbeef1 50%,
+    #f3e3e7 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+}
