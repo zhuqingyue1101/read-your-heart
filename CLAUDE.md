@@ -20,7 +20,7 @@
 ### 技术栈
 - **前端**: React 19 + Vite + TypeScript + Tailwind CSS v4，移动端H5
 - **后端**: Python FastAPI，OCR使用 EasyOCR 或 PaddleOCR
-- **AI**: DeepSeek V4 Pro API（纯文本，不持视觉）
+- **AI**: DeepSeek API（deepseek-chat，纯文本，不持视觉）
 - **存储**: 浏览器 localStorage（无数据库、无登录）
 - **部署**: 前后端分离，API Key 仅存后端环境变量
 
