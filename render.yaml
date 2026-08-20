@@ -15,4 +15,4 @@ services:
       - key: VISION_BASE_URL
         value: https://api.siliconflow.cn/v1
       - key: VISION_MODEL
-        value: Qwen/Qwen2.5-VL-32B-Instruct
+        value: Qwen/Qwen3-VL-8B-Instruct

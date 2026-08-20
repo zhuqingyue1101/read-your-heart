@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 VISION_API_KEY = os.getenv("VISION_API_KEY", "")
 VISION_BASE_URL = os.getenv("VISION_BASE_URL", "https://api.siliconflow.cn/v1")
-VISION_MODEL = os.getenv("VISION_MODEL", "Qwen/Qwen2.5-VL-32B-Instruct")
+VISION_MODEL = os.getenv("VISION_MODEL", "Qwen/Qwen3-VL-8B-Instruct")
 
 MAX_EDGE = 2048
 
