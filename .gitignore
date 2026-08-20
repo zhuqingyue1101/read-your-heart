@@ -9,3 +9,12 @@ cursh聊天截图/
 
 # 个人简历（隐私，不提交）
 *.docx
+
+# Python 缓存
+__pycache__/
+*.pyc
+*.pyo
+
+# 环境变量（含 API Key，绝不提交）
+.env
+backend/.env
