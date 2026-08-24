@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>朱清越 · AI 产品实习生</title>
+<style>
+  :root {
+    --primary: #2563eb;
+    --primary-dark: #1d4ed8;
+    --primary-tint: #eff6ff;
+    --ink: #0f172a;
+    --ink-2: #334155;
+    --muted: #64748b;
+    --line: #e2e8f0;
+    --bg: #ffffff;
+    --bg-soft: #f8fafc;
+    --radius: 16px;
+    --maxw: 960px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB",
+      "Microsoft YaHei", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: var(--ink);
+    background: var(--bg);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  a { color: var(--primary); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 24px; }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    background: linear-gradient(180deg, var(--primary-tint) 0%, #ffffff 100%);
+    border-bottom: 1px solid var(--line);
+    padding: 64px 0 56px;
+  }
+  .hero .badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: #ffffff; border: 1px solid var(--line);
+    color: var(--primary-dark); font-size: 13px; font-weight: 600;
+    padding: 5px 12px; border-radius: 999px; margin-bottom: 20px;
+  }
+  .hero .badge .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--primary); }
+  .hero h1 { font-size: 44px; font-weight: 700; letter-spacing: -0.5px; line-height: 1.2; }
+  .hero .subtitle { font-size: 18px; color: var(--ink-2); margin-top: 10px; font-weight: 500; }
+  .hero .tagline { font-size: 15px; color: var(--muted); margin-top: 8px; max-width: 620px; }
+  .hero .contacts { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
+  .hero .contact {
+    display: inline-flex; align-items: center; gap: 7px;
+    background: #ffffff; border: 1px solid var(--line); border-radius: 10px;
+    padding: 8px 14px; font-size: 14px; color: var(--ink-2);
+    transition: border-color .15s, transform .15s;
+  }
+  .hero .contact:hover { border-color: var(--primary); text-decoration: none; transform: translateY(-1px); }
+  .hero .contact svg { width: 16px; height: 16px; color: var(--primary); flex: none; }
+
+  /* ---------- Sections ---------- */
+  main { padding: 56px 0 72px; }
+  section { margin-bottom: 56px; }
+  section:last-child { margin-bottom: 0; }
+
+  .sec-head { display: flex; align-items: center; gap: 14px; margin-bottom: 22px; }
+  .sec-head .num {
+    font-size: 13px; font-weight: 700; color: var(--primary);
+    background: var(--primary-tint); border-radius: 8px; padding: 4px 10px; flex: none;
+  }
+  .sec-head h2 { font-size: 24px; font-weight: 700; letter-spacing: -0.3px; }
+  .sec-head .rule { flex: 1; height: 1px; background: var(--line); }
+
+  /* ---------- Cards / Timeline ---------- */
+  .card {
+    background: #ffffff; border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 26px 28px; margin-bottom: 18px;
+    transition: box-shadow .18s, border-color .18s;
+  }
+  .card:hover { box-shadow: 0 8px 28px rgba(15, 23, 42, 0.06); border-color: #cbd5e1; }
+
+  .card .top { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; flex-wrap: wrap; }
+  .card .company { font-size: 18px; font-weight: 700; }
+  .card .role { font-size: 14px; color: var(--primary-dark); font-weight: 600; margin-top: 2px; }
+  .card .period { font-size: 13px; color: var(--muted); font-weight: 500; white-space: nowrap; }
+
+  .card .points { margin-top: 16px; }
+  .card .point { display: flex; gap: 10px; margin-bottom: 10px; font-size: 14.5px; color: var(--ink-2); }
+  .card .point:last-child { margin-bottom: 0; }
+  .card .point .mark { color: var(--primary); font-weight: 700; flex: none; line-height: 1.6; }
+
+  .card .point b { color: var(--ink); font-weight: 600; }
+  .hl { color: var(--primary-dark); font-weight: 600; }
+
+  .metric-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+  .metric {
+    background: var(--bg-soft); border: 1px solid var(--line); border-radius: 10px;
+    padding: 8px 13px; font-size: 13px; color: var(--ink-2);
+  }
+  .metric b { color: var(--primary-dark); font-weight: 700; font-size: 15px; }
+
+  /* ---------- Education ---------- */
+  .edu { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  @media (max-width: 640px) { .edu { grid-template-columns: 1fr; } }
+  .edu .card { margin-bottom: 0; }
+  .edu .degree { font-size: 15px; font-weight: 600; margin-top: 2px; }
+  .edu .notes { margin-top: 12px; font-size: 13.5px; color: var(--muted); }
+
+  /* ---------- Skills ---------- */
+  .skill-group { margin-bottom: 16px; }
+  .skill-group .label { font-size: 13px; font-weight: 600; color: var(--muted); margin-bottom: 8px; }
+  .tags { display: flex; flex-wrap: wrap; gap: 8px; }
+  .tag {
+    background: var(--bg-soft); border: 1px solid var(--line); border-radius: 999px;
+    padding: 5px 13px; font-size: 13.5px; color: var(--ink-2);
+  }
+
+  /* ---------- About ---------- */
+  .about-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  @media (max-width: 640px) { .about-grid { grid-template-columns: 1fr; } }
+  .about-item { background: #ffffff; border: 1px solid var(--line); border-radius: var(--radius); padding: 22px; }
+  .about-item .k { font-size: 16px; font-weight: 700; color: var(--primary-dark); margin-bottom: 8px; }
+  .about-item p { font-size: 13.5px; color: var(--ink-2); }
+
+  footer {
+    border-top: 1px solid var(--line); padding: 28px 0;
+    text-align: center; font-size: 13px; color: var(--muted);
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <span class="badge"><span class="dot"></span>AI 产品实习生 · 在职</span>
+    <h1>朱清越</h1>
+    <div class="subtitle">法学背景 · 跨界 AI 产品 · 数据驱动增长</div>
+    <p class="tagline">从法学跨界到 AI 产品，专注用数据与 AI 技术驱动用户增长与产品体验。目前在百度文心老师负责准确率与加载耗时优化。</p>
+    <div class="contacts">
+      <a class="contact" href="mailto:13698003137@163.com">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 5L2 7"/></svg>
+        13698003137@163.com
+      </a>
+      <a class="contact" href="tel:13698003137">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        13698003137
+      </a>
+      <span class="contact">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+        微信：z13698003137
+      </span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- 实习经历 -->
+  <section id="experience">
+    <div class="sec-head">
+      <span class="num">01</span><h2>实习经历</h2><span class="rule"></span>
+    </div>
+
+    <div class="card">
+      <div class="top">
+        <div>
+          <div class="company">百度 · 搜索 · 教育业务组 · 文心老师</div>
+          <div class="role">AI 产品实习生</div>
+        </div>
+        <span class="period">2026.04 – 至今</span>
+      </div>
+      <div class="points">
+        <div class="point"><span class="mark">·</span><span><b>准确率优化：</b>推动多轮准确率评估落地，拆解 badcase 定位关键问题并协同研发修复；搭建非端到端评估工具；制定黑名单回捞与拉黑规则，带动点击 <b class="hl">PV +1w</b>。</span></div>
+        <div class="point"><span class="mark">·</span><span><b>画图能力建设：</b>基于线上 Query 学科/题型分布完成需求摸底，确定能力优先级，制定评测标准与 C 端交互方案。</span></div>
+        <div class="point"><span class="mark">·</span><span><b>图片矫正接入：</b>量化拍照倾斜影响面，按比例抽样评测，验证准确率预计 <b class="hl">+4.5pp</b>。</span></div>
+        <div class="point"><span class="mark">·</span><span><b>加载耗时优化：</b>识别 <b class="hl">3s</b> 为转化拐点，优化讲题加载链路（任务后置、分批返回、模板化首句），耗时降至 <b class="hl">3.3s</b>；规划近线库降低等待时长。</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="top">
+        <div>
+          <div class="company">京东零售 · 用户运营部 · 用户增长产品组</div>
+          <div class="role">产品实习生</div>
+        </div>
+        <span class="period">2025.07 – 2025.10</span>
+      </div>
+      <div class="points">
+        <div class="point"><span class="mark">·</span><span><b>外卖新用户引流活动：</b>基于 CDP 标签 + 风控等级 + 参与次数动态圈选目标人群，设计订单全链路逆向规则与前端「试用领取」文案优化。</span></div>
+        <div class="point"><span class="mark">·</span><span><b>两轮 AB 实验验证：</b>新活动用户价值达随机组的 <b class="hl">2.7x</b>，入口点击 +<b class="hl">3pp</b>、转化 +<b class="hl">2.5pp</b>，增量 <b class="hl">ROI 11.1</b>。</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 项目经历 -->
+  <section id="projects">
+    <div class="sec-head">
+      <span class="num">02</span><h2>项目经历</h2><span class="rule"></span>
+    </div>
+
+    <div class="card">
+      <div class="top">
+        <div>
+          <div class="company">读心 · AI 暧昧聊天助手</div>
+          <div class="role">个人 Vibe Coding 项目（0 → 1 独立落地）</div>
+        </div>
+        <span class="period"><a href="https://read-your-heart-2dpt.vercel.app" target="_blank" rel="noopener">在线体验 →</a></span>
+      </div>
+      <div class="points">
+        <div class="point"><span class="mark">·</span><span><b>需求洞察：</b>针对年轻人「面对 crush 不会回下一句」的痛点，分析约 <b class="hl">300</b> 个公开聊天样本，完成产品定义与 PRD。</span></div>
+        <div class="point"><span class="mark">·</span><span><b>核心体验：</b>设计「局势判断 + 回复生成 + 翻车预警 + 连续关系」；将关系阶段、目标、风格与历史档案纳入模型输入，支持仅上传最新截图即可继续分析。</span></div>
+        <div class="point"><span class="mark">·</span><span><b>技术落地：</b>用 ChatGPT + Claude Code Vibe Coding 完成从 0 到 1，搭建 EasyOCR + DeepSeek 端到端分析链路，并独立部署上线。</span></div>
+      </div>
+      <div class="metric-row">
+        <span class="metric"><b>300</b> 聊天样本</span>
+        <span class="metric"><b>0→1</b> 独立落地</span>
+        <span class="metric"><b>已上线</b> Vercel</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 教育背景 -->
+  <section id="education">
+    <div class="sec-head">
+      <span class="num">03</span><h2>教育背景</h2><span class="rule"></span>
+    </div>
+    <div class="edu">
+      <div class="card">
+        <div class="top">
+          <div>
+            <div class="company">中国海洋大学</div>
+            <div class="degree">法学 · 硕士</div>
+          </div>
+          <span class="period">2025.09 – 2027.06</span>
+        </div>
+        <div class="notes">985 / 211 / 双一流 · 学业奖学金</div>
+      </div>
+      <div class="card">
+        <div class="top">
+          <div>
+            <div class="company">中国海洋大学</div>
+            <div class="degree">法学 · 本科</div>
+          </div>
+          <span class="period">2021.09 – 2025.06</span>
+        </div>
+        <div class="notes">保研资格 · 学业奖学金 · 最佳辩手 · 创新创业奖学金 · 贸仲杯三等奖</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 个人技能 -->
+  <section id="skills">
+    <div class="sec-head">
+      <span class="num">04</span><h2>个人技能</h2><span class="rule"></span>
+    </div>
+    <div class="skill-group">
+      <div class="label">数据分析</div>
+      <div class="tags"><span class="tag">SQL 取数</span><span class="tag">AB 实验</span></div>
+    </div>
+    <div class="skill-group">
+      <div class="label">产品设计</div>
+      <div class="tags"><span class="tag">Axure</span><span class="tag">墨刀</span><span class="tag">Figma</span></div>
+    </div>
+    <div class="skill-group">
+      <div class="label">AI 工具</div>
+      <div class="tags"><span class="tag">ChatGPT</span><span class="tag">Claude Code</span><span class="tag">AI 提效工具</span></div>
+    </div>
+    <div class="skill-group">
+      <div class="label">证书</div>
+      <div class="tags"><span class="tag">英语四六级</span><span class="tag">法律职业资格证书</span></div>
+    </div>
+  </section>
+
+  <!-- 自我评价 -->
+  <section id="about">
+    <div class="sec-head">
+      <span class="num">05</span><h2>自我评价</h2><span class="rule"></span>
+    </div>
+    <div class="about-grid">
+      <div class="about-item">
+        <div class="k">有 Passion</div>
+        <p>对新鲜事物保持好奇，乐于探索新的地点、风味与体验；习惯主动观察细节、发现有趣的问题。</p>
+      </div>
+      <div class="about-item">
+        <div class="k">执行力 Max</div>
+        <p>有想法就快速启动，先明确目标、时间节点与节奏，再一步步落地，持续把事情推进到交付。</p>
+      </div>
+      <div class="about-item">
+        <div class="k">不吃压力</div>
+        <p>面对复杂任务先拆解、判断优先级，变化中及时调整方案，在压力下保持稳定节奏。</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">朱清越 · AI 产品实习生 · 2026</div>
+</footer>
+
+</body>
+</html>
