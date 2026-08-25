@@ -3,34 +3,64 @@ import type { AnalyzeContext } from '../types'
 
 const RELATIONSHIP_STAGES = [
   '刚认识',
+  '见过面',
   '聊了一阵',
   '暧昧中',
-  '见过面',
-  '约会后',
+  '约会过',
   '冷淡期',
   '复联中',
-  '我也说不清',
 ]
 const GOALS = [
-  '继续聊',
   '试探好感',
+  '撩对方',
   '暧昧一点',
-  '约出来',
-  '不想显得太主动',
+  '矜持一点',
   '想打直球',
-  '体面撤退',
-  '看看我有没有戏',
+  '冷漠一些',
 ]
 const REPLY_STYLES = [
   '自然一点',
-  '甜一点',
+  '可爱一点',
+  '高冷一点',
   '拽一点',
   '搞笑一点',
-  '清冷一点',
   '直球一点',
-  '像我本人',
-  '别太AI',
 ]
+
+const MAX_TAGS = 3
+
+function splitValue(value: string): string[] {
+  return value
+    .split(/[、,，/;；\s]+/)
+    .map((s) => s.trim())
+    .filter(Boolean)
+}
+
+function parseSelection(
+  value: string | undefined,
+  options: string[],
+  fallbackTags: string[],
+): { tags: string[]; custom: string } {
+  if (!value) return { tags: fallbackTags, custom: '' }
+  const parts = splitValue(value)
+  const tags = parts.filter((p) => options.includes(p))
+  const custom = parts.filter((p) => !options.includes(p)).join('、')
+  return { tags: tags.length ? tags : fallbackTags, custom }
+}
+
+function combine(tags: string[], custom: string): string {
+  return [...tags, custom.trim()].filter(Boolean).join('、')
+}
+
+function toggleTag(current: string[], tag: string, max = MAX_TAGS): string[] {
+  if (current.includes(tag)) return current.filter((t) => t !== tag)
+  if (current.length >= max) return current
+  return [...current, tag]
+}
+
+function joinTags(tags: string[]): string {
+  return tags.join('、') || '未选'
+}
 
 interface Props {
   initialName?: string
@@ -44,9 +74,18 @@ export default function UploadPage({ initialName, initialContext, onBack, onAnal
   const [previews, setPreviews] = useState<string[]>([])
   const [tooMany, setTooMany] = useState(false)
   const [name, setName] = useState(initialName ?? '')
-  const [stage, setStage] = useState(initialContext?.relationship_stage ?? '暧昧中')
-  const [goal, setGoal] = useState(initialContext?.goal ?? '试探好感')
-  const [style, setStyle] = useState(initialContext?.reply_style ?? '自然一点')
+
+  const stageInit = parseSelection(initialContext?.relationship_stage, RELATIONSHIP_STAGES, ['暧昧中'])
+  const goalInit = parseSelection(initialContext?.goal, GOALS, ['试探好感'])
+  const styleInit = parseSelection(initialContext?.reply_style, REPLY_STYLES, ['自然一点'])
+
+  const [stage, setStage] = useState<string[]>(stageInit.tags)
+  const [stageCustom, setStageCustom] = useState(stageInit.custom)
+  const [goal, setGoal] = useState<string[]>(goalInit.tags)
+  const [goalCustom, setGoalCustom] = useState(goalInit.custom)
+  const [style, setStyle] = useState<string[]>(styleInit.tags)
+  const [styleCustom, setStyleCustom] = useState(styleInit.custom)
+
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const handleSelect = (files: FileList | null) => {
@@ -81,9 +120,9 @@ export default function UploadPage({ initialName, initialContext, onBack, onAnal
     onAnalyze(
       images,
       {
-        relationship_stage: stage,
-        goal,
-        reply_style: style,
+        relationship_stage: combine(stage, stageCustom),
+        goal: combine(goal, goalCustom),
+        reply_style: combine(style, styleCustom),
         crush_profile_summary: initialContext?.crush_profile_summary ?? '',
       },
       name.trim(),
@@ -108,7 +147,7 @@ export default function UploadPage({ initialName, initialContext, onBack, onAnal
       {/* 续读提示 */}
       {initialContext && (
         <div className="bg-brand-light/20 border border-brand-light/50 rounded-xl px-3 py-2 text-xs text-ink mb-4">
-          📌 正在续读：{name || '这条线'}（{stage} · {goal}），上次档案已带入
+          📌 正在续读：{name || '这条线'}（{joinTags(stage)} · {joinTags(goal)}），上次档案已带入
         </div>
       )}
 
@@ -206,35 +245,32 @@ export default function UploadPage({ initialName, initialContext, onBack, onAnal
 
       {/* 上下文选择 */}
       <div className="space-y-5 mt-6">
-        <Field label="你们现在什么关系？">
-          <div className="flex flex-wrap gap-2">
-            {RELATIONSHIP_STAGES.map((s) => (
-              <Chip key={s} active={stage === s} onClick={() => setStage(s)}>
-                {s}
-              </Chip>
-            ))}
-          </div>
-        </Field>
+        <TagField
+          label="你们现在什么关系？"
+          options={RELATIONSHIP_STAGES}
+          selected={stage}
+          onToggle={(tag) => setStage((prev) => toggleTag(prev, tag))}
+          custom={stageCustom}
+          onCustomChange={setStageCustom}
+        />
 
-        <Field label="这次想达到什么目标？">
-          <div className="flex flex-wrap gap-2">
-            {GOALS.map((g) => (
-              <Chip key={g} active={goal === g} onClick={() => setGoal(g)}>
-                {g}
-              </Chip>
-            ))}
-          </div>
-        </Field>
+        <TagField
+          label="这次想达到什么目标？"
+          options={GOALS}
+          selected={goal}
+          onToggle={(tag) => setGoal((prev) => toggleTag(prev, tag))}
+          custom={goalCustom}
+          onCustomChange={setGoalCustom}
+        />
 
-        <Field label="回复想要什么风格？">
-          <div className="flex flex-wrap gap-2">
-            {REPLY_STYLES.map((s) => (
-              <Chip key={s} active={style === s} onClick={() => setStyle(s)}>
-                {s}
-              </Chip>
-            ))}
-          </div>
-        </Field>
+        <TagField
+          label="回复想要什么风格？"
+          options={REPLY_STYLES}
+          selected={style}
+          onToggle={(tag) => setStyle((prev) => toggleTag(prev, tag))}
+          custom={styleCustom}
+          onCustomChange={setStyleCustom}
+        />
       </div>
 
       {/* 提交 */}
@@ -254,11 +290,41 @@ export default function UploadPage({ initialName, initialContext, onBack, onAnal
   )
 }
 
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
+function TagField({
+  label,
+  options,
+  selected,
+  onToggle,
+  custom,
+  onCustomChange,
+}: {
+  label: string
+  options: string[]
+  selected: string[]
+  onToggle: (tag: string) => void
+  custom: string
+  onCustomChange: (value: string) => void
+}) {
   return (
     <div>
-      <p className="text-sm font-semibold mb-2">{label}</p>
-      {children}
+      <div className="flex items-baseline justify-between mb-2">
+        <p className="text-sm font-semibold">{label}</p>
+        <span className="text-xs text-ink-muted">最多选 3 个</span>
+      </div>
+      <div className="flex flex-wrap gap-2">
+        {options.map((o) => (
+          <Chip key={o} active={selected.includes(o)} onClick={() => onToggle(o)}>
+            {o}
+          </Chip>
+        ))}
+      </div>
+      <input
+        type="text"
+        value={custom}
+        onChange={(e) => onCustomChange(e.target.value)}
+        placeholder="自定义输入（可选）"
+        className="mt-2 w-full rounded-xl bg-white border border-brand-light px-4 py-2.5 text-sm text-ink placeholder:text-ink-muted focus:outline-none focus:border-brand"
+      />
     </div>
   )
 }
