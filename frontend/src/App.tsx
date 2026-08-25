@@ -186,8 +186,7 @@ function App() {
   if (phase === 'loading') {
     return (
       <div className="page">
-        <p className="text-base font-semibold mb-1 text-center">{loadingText}</p>
-        <p className="text-xs text-ink-muted text-center mb-5">OCR 识别 + AI 分析中，稍等几秒</p>
+        <p className="text-base font-semibold mb-5 text-center">{loadingText}</p>
 
         {/* 结论卡片骨架 */}
         <div className="skeleton rounded-2xl h-28 mb-5" />
