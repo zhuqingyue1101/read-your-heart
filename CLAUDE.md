@@ -2,7 +2,7 @@
 
 ## 项目概述
 面向18-28岁年轻人的AI聊天截图解读H5应用。用户上传与crush的微信聊天截图，
-系统OCR提取文本后通过DeepSeek API分析对方信号、判断关系局势，
+系统用视觉模型识别文字后通过DeepSeek API分析对方信号、判断关系局势，
 并生成可直接复制发送的自然回复。
 
 ## 标准文件路径指引
@@ -19,10 +19,10 @@
 
 ### 技术栈
 - **前端**: React 19 + Vite + TypeScript + Tailwind CSS v4，移动端H5
-- **后端**: Python FastAPI，OCR使用 EasyOCR 或 PaddleOCR
-- **AI**: DeepSeek API（deepseek-chat，纯文本，不持视觉）
+- **后端**: Vercel Node Serverless Function（`frontend/api/analyze.js`），与前端同部署
+- **AI**: DeepSeek API（deepseek-chat，纯文本分析）+ SiliconFlow Qwen3-VL（视觉读图）
 - **存储**: 浏览器 localStorage（无数据库、无登录）
-- **部署**: 前后端分离，API Key 仅存后端环境变量
+- **部署**: Vercel 全栈（免费、无需信用卡），API Key 仅存 Vercel 环境变量
 
 ### 开发原则
 1. **安全优先**：API Key 永远不放前端代码；截图不上传到服务端持久化
@@ -35,6 +35,9 @@
 - 训练/参考截图: [cursh聊天截图/](cursh聊天截图/) — 130+ 张小红书真实聊天截图
 - 完整PRD: [读心V2 产品需求文档.pdf](读心V2 产品需求文档.pdf)
 
-### 环境变量
+### 环境变量（配置在 Vercel）
 - `DEEPSEEK_API_KEY`: DeepSeek API Key
 - `DEEPSEEK_BASE_URL`: API 地址（默认 https://api.deepseek.com）
+- `VISION_API_KEY`: SiliconFlow 视觉模型 Key
+- `VISION_BASE_URL`: 视觉 API 地址（默认 https://api.siliconflow.cn/v1）
+- `VISION_MODEL`: 视觉模型（默认 Qwen/Qwen3-VL-8B-Instruct）
