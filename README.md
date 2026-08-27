@@ -2,7 +2,9 @@
 
 > 面向 18-28 岁年轻人的 AI 暧昧聊天截图解读工具。上传你和 crush 的微信聊天截图，看懂对方信号、判断关系局势，生成可以直接复制发送的自然回复。
 
-一个从 0 到 1 的 AI 产品全流程实践：需求洞察 → 样本分析 → 产品设计 → 技术实现，包含完整的前后端代码、PRD、技术方案与开发日志。
+一个从 0 到 1 的 AI 产品全流程实践：需求洞察 → 样本分析 → 产品设计 → 技术实现，包含完整的前端代码、PRD、技术方案与开发日志。
+
+**线上体验**：https://read-your-heart-2dpt.vercel.app
 
 ---
 
@@ -28,70 +30,60 @@
 
 这是这个项目区别于「demo 玩具」的地方——需求来自真实样本，而不是拍脑袋：
 
-- 从 **132 张小红书真实聊天截图**批量 OCR，归纳出 11 个话术招式 / 7 类（邀约、拉扯、试探、冷落反击等），沉淀为 [话术招式库](docs/06-话术招式库.md)
+- 从 **132 张小红书真实聊天截图**批量识别文字，归纳出 11 个话术招式 / 7 类（邀约、拉扯、试探、冷落反击等），沉淀为 [话术招式库](docs/06-话术招式库.md)
 - 识别出关键 gap：样本多是「高段位输出方在炫技」，而产品真正要服务的是「看不懂、不敢回」的求助方
-- 发现「撤回」是高频暧昧信号、「被冷落」是独立场景，据此做了冷落场景分级 prompt 与 OCR 噪音过滤规则
+- 发现「撤回」是高频暧昧信号、「被冷落」是独立场景，据此做了冷落场景分级 prompt 与噪音过滤规则
 - 完整 PRD 见 [读心V2 产品需求文档.pdf](读心V2 产品需求文档.pdf)，产品/技术/设计/验收文档见 [docs/](docs/)
 
 ## 技术架构
 
 ```
-用户浏览器 (H5)          后端服务器               AI 服务
-┌──────────────┐     ┌──────────────┐     ┌────────────────┐
-│  React SPA   │────▶│  Python      │────▶│  DeepSeek       │
-│  (Vite)      │     │  FastAPI     │     │  deepseek-chat  │
-│              │     │              │     │  (文本分析)     │
-│  localStorage│     │  EasyOCR     │     └────────────────┘
-│  (会话/档案) │     │  (图片→文本)  │
-└──────────────┘     └──────────────┘
+用户浏览器 (H5)              Vercel Serverless Function           AI 服务
+┌──────────────┐   JSON     ┌────────────────────────┐      ┌──────────────────┐
+│  React SPA   │──(base64)─▶│  frontend/api/         │─────▶│  SiliconFlow     │
+│  (Vite)      │  图片压缩   │  analyze.js (Node)     │      │  Qwen3-VL (读图) │
+│  localStorage│            │                        │      └──────────────────┘
+│  (会话/档案) │            │                        │───▶ DeepSeek (分析)
+└──────────────┘            └────────────────────────┘
 ```
 
 | 层 | 技术选型 |
 |----|---------|
 | 前端 | React 19 + TypeScript + Vite + Tailwind CSS v4，移动端 H5 |
-| 后端 | Python FastAPI + EasyOCR（中文识别）+ Pillow（图片预处理） |
-| AI | DeepSeek API（deepseek-chat，纯文本，不持视觉，图片先走 OCR） |
+| 后端 | Vercel Node Serverless Function（`frontend/api/analyze.js`），与前端同部署 |
+| AI | SiliconFlow Qwen3-VL-8B（视觉读图）+ DeepSeek deepseek-chat（文本分析） |
 | 存储 | 浏览器 localStorage，无数据库、无登录 |
+| 部署 | Vercel 全栈，免费、无需信用卡 |
 
-**安全设计**：API Key 仅存后端环境变量，不出现在前端；截图处理完即丢弃，不写磁盘、不上传持久化；前端仅存分析文本摘要，不存原图。
+**安全设计**：API Key 仅存 Vercel 环境变量，不出现在前端；截图处理完即丢弃，不写磁盘、不持久化；前端仅存分析文本摘要，不存原图。
 
 ## 快速开始
 
-### 后端
+### 线上体验
 
-```bash
-cd backend
-pip install -r requirements.txt
+直接打开 https://read-your-heart-2dpt.vercel.app
 
-# 创建 .env 文件，填入：
-# DEEPSEEK_API_KEY=sk-xxx
-# DEEPSEEK_BASE_URL=https://api.deepseek.com
-
-uvicorn main:app --reload --port 8000
-```
-
-> 首次运行 EasyOCR 会自动下载中文识别模型，体积较大，需等待一次。
-
-### 前端
+### 本地开发
 
 ```bash
 cd frontend
 npm install
 npm run dev
-# 打开 http://localhost:5173（开发服务器已配置 /api 代理到后端 8000 端口）
+# 打开 http://localhost:5173
+# /api 请求已代理到线上已部署的 Node Function，无需本地后端
 ```
 
 ## 目录结构
 
 ```
-├── frontend/               # React 前端（H5）
-├── backend/                # FastAPI 后端（OCR + DeepSeek 调用）
+├── frontend/               # React 前端 + Vercel Node Function（api/analyze.js）
 ├── docs/                   # 产品需求 / 技术方案 / 设计规范 / 开发计划 / 验收标准 / 话术招式库
 ├── dev_logs/               # 每日开发日志
+├── personal-site/          # 个人介绍网页
 ├── 读心V2 产品需求文档.pdf  # 完整 PRD
 └── cursh聊天截图/          # 132 张真实训练样本（隐私原因未开源）
 ```
 
 ## 项目状态
 
-初版（V2）核心链路已实现：上传 → OCR → 分析 → 回复建议 → 会话/档案/续读/历史。当前为本地开发态，需自备 DeepSeek API Key 跑通端到端，尚未部署上线。
+已上线（Vercel 全栈，无需自建后端）：上传 → 读图 → 分析 → 回复建议 → 会话/档案/续读/历史，端到端可跑通。视觉读图用 SiliconFlow Qwen3-VL，分析用 DeepSeek。

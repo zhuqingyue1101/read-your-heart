@@ -9,7 +9,7 @@ export default defineConfig({
     host: true, // 监听 0.0.0.0，允许局域网/手机访问
     proxy: {
       '/api': {
-        target: 'http://localhost:8000',
+        target: 'https://read-your-heart-2dpt.vercel.app',
         changeOrigin: true,
       },
     },
