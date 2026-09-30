@@ -49,8 +49,23 @@ OCR 结果里常混入非聊天内容，必须一律忽略，不要当成任何�
     "crush_traits": ["对方特征1", "特征2"],
     "user_risk": ["用户风险行为"],
     "summary": "完整关系摘要，供下次分析参考"
+  },
+  "memory_update": {
+    "interests": ["对方新透露的兴趣，没有则为空数组"],
+    "habits": ["对方新透露的聊天/生活习惯，没有则为空数组"],
+    "important": ["对方的重要信息（生日、近况、约定等），没有则为空数组"],
+    "history": [{"date": "日期", "event": "一起发生的事件"}],
+    "tone": ["用户偏好的回复语气，没有则为空数组"],
+    "taboos": ["用户忌讳的回复方式，没有则为空数组"],
+    "catchphrases": ["用户常用口头禅，没有则为空数组"]
   }
 }
+
+## 档案记忆（重要）
+分析时你会拿到一份「已记住的 crush 档案」，包含 TA 的兴趣 / 习惯 / 重要信息 / 历史事件，以及用户自己的回复偏好（语气、忌讳、口头禅）。
+- 生成回复时必须自动参考这些信息：提到 TA 的兴趣、避开用户忌讳的回复方式、贴合用户偏好的语气和口头禅。
+- 同时在 memory_update 里抽取本轮对话中新出现、值得长期记住的信息：对方新兴趣、新习惯、生日近况、重要约定、历史事件，以及用户表现出或新表达出的回复偏好。
+- 只抽取「新信息」，档案里已经有的不要重复；没有新信息就返回空数组。
 
 ## 回复生成规则
 - 必须返回 6 条回复，类型固定为：稳妥版、暧昧版、松弛版、幽默版、克制版、稍微进攻版
@@ -200,11 +215,28 @@ function parseJsonResponse(rawText) {
   return JSON.parse(text)
 }
 
+function buildProfileSection(profile) {
+  if (!profile) return ''
+  const c = profile.crush || {}
+  const m = profile.me || {}
+  const lines = []
+  if (c.interests?.length) lines.push(`- TA 的兴趣：${c.interests.join('、')}`)
+  if (c.habits?.length) lines.push(`- TA 的习惯：${c.habits.join('、')}`)
+  if (c.important?.length) lines.push(`- TA 的重要信息：${c.important.join('、')}`)
+  if (c.history?.length) lines.push(`- 你们的历史事件：${c.history.map((h) => `${h.date} ${h.event}`).join('；')}`)
+  if (m.tone?.length) lines.push(`- 用户偏好的回复语气：${m.tone.join('、')}`)
+  if (m.taboos?.length) lines.push(`- 用户忌讳的回复方式：${m.taboos.join('、')}`)
+  if (m.catchphrases?.length) lines.push(`- 用户常用口头禅：${m.catchphrases.join('、')}`)
+  if (!lines.length) return ''
+  return `## 已记住的 crush 档案\n${lines.join('\n')}\n`
+}
+
 function buildAnalyzeMessages(chatText, ctx) {
   let further = ''
   if (ctx.crush_profile_summary) {
     further = `- ⚠️ 这是基于同一crush的继续分析，以下是之前的档案摘要：\n${ctx.crush_profile_summary}`
   }
+  const profileSection = buildProfileSection(ctx.profile)
   const userContent =
     `## 聊天截图OCR文本\n${chatText}\n\n` +
     `## 用户补充信息\n` +
@@ -212,6 +244,7 @@ function buildAnalyzeMessages(chatText, ctx) {
     `- 用户这次想达到的目标：${ctx.goal}\n` +
     `- 用户想要的回复风格：${ctx.reply_style}\n` +
     `${further}\n` +
+    `${profileSection}` +
     `\n请根据以上信息进行分析，只返回JSON。`
   return [
     { role: 'system', content: SYSTEM_PROMPT },
@@ -264,6 +297,7 @@ export default async function handler(req, res) {
       goal = '试探好感',
       reply_style = '自然一点',
       crush_profile_summary = '',
+      profile = null,
       swap_sides = false,
     } = body || {}
 
@@ -298,6 +332,7 @@ export default async function handler(req, res) {
       goal,
       reply_style,
       crush_profile_summary,
+      profile,
     })
     const raw = await chatCompletion(messages)
     const data = parseJsonResponse(raw)

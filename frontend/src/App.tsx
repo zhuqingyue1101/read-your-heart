@@ -4,6 +4,7 @@ import ResultPage from './components/ResultPage'
 import SessionListPage from './components/SessionListPage'
 import HistoryPage from './components/HistoryPage'
 import SettingsPage from './components/SettingsPage'
+import ProfilePage from './components/ProfilePage'
 import { analyzeChat } from './api'
 import {
   loadSessions,
@@ -13,8 +14,9 @@ import {
   clearAllSessions,
   newId,
   nextCrushName,
+  mergeProfile,
 } from './store'
-import type { AnalyzeContext, AnalyzeResponse, AnalysisRecord, Session } from './types'
+import type { AnalyzeContext, AnalyzeResponse, AnalysisRecord, Session, CrushProfile } from './types'
 
 const LOADING_TEXTS = [
   '正在读你们的小心思…',
@@ -24,7 +26,7 @@ const LOADING_TEXTS = [
   '鉴定暧昧浓度中…',
 ]
 
-type Phase = 'list' | 'upload' | 'loading' | 'result' | 'history' | 'settings'
+type Phase = 'list' | 'upload' | 'loading' | 'result' | 'history' | 'settings' | 'profile'
 
 function App() {
   const [phase, setPhase] = useState<Phase>('list')
@@ -117,6 +119,7 @@ function App() {
         goal: context.goal,
         reply_style: context.reply_style,
         crush_profile_summary: data.crush_profile_update.summary,
+        profile: mergeProfile(prev?.profile, data.memory_update),
         latest_status: data.crush_profile_update.latest_status,
         crush_traits: data.crush_profile_update.crush_traits,
         user_risk: data.crush_profile_update.user_risk,
@@ -167,6 +170,19 @@ function App() {
   const handleSettings = () => {
     setError('')
     setPhase('settings')
+  }
+
+  const handleProfile = (session: Session) => {
+    setActiveSessionId(session.id)
+    setError('')
+    setPhase('profile')
+  }
+
+  const handleSaveProfile = (profile: CrushProfile) => {
+    if (!activeSessionId) return
+    const s = sessions.find((x) => x.id === activeSessionId)
+    if (!s) return
+    setSessions(upsertSession({ ...s, profile, updated_at: Date.now() }))
   }
 
   const handleDeleteRecord = (recordId: string) => {
@@ -242,6 +258,16 @@ function App() {
     )
   }
 
+  if (phase === 'profile' && activeSession) {
+    return (
+      <ProfilePage
+        session={activeSession}
+        onBack={handleBackToList}
+        onSave={handleSaveProfile}
+      />
+    )
+  }
+
   if (phase === 'list') {
     return (
       <SessionListPage
@@ -251,6 +277,7 @@ function App() {
         onDelete={handleDelete}
         onHistory={handleHistory}
         onSettings={handleSettings}
+        onProfile={handleProfile}
       />
     )
   }
@@ -261,6 +288,7 @@ function App() {
         goal: activeSession.goal,
         reply_style: activeSession.reply_style,
         crush_profile_summary: activeSession.crush_profile_summary,
+        profile: activeSession.profile,
       }
     : undefined
 

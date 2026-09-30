@@ -15,6 +15,17 @@ export default function ResultPage({
   onSwapSides,
 }: Props) {
   const profile = result.crush_profile_update
+  const mu = result.memory_update
+  const memoryItems: string[] = []
+  if (mu) {
+    ;(mu.interests ?? []).forEach((t) => memoryItems.push(`兴趣：${t}`))
+    ;(mu.habits ?? []).forEach((t) => memoryItems.push(`习惯：${t}`))
+    ;(mu.important ?? []).forEach((t) => memoryItems.push(`重要：${t}`))
+    ;(mu.history ?? []).forEach((h) => memoryItems.push(`事件：${h.date} ${h.event}`))
+    ;(mu.tone ?? []).forEach((t) => memoryItems.push(`语气：${t}`))
+    ;(mu.taboos ?? []).forEach((t) => memoryItems.push(`忌讳：${t}`))
+    ;(mu.catchphrases ?? []).forEach((t) => memoryItems.push(`口头禅：${t}`))
+  }
 
   return (
     <div className="page">
@@ -65,6 +76,23 @@ export default function ResultPage({
           </p>
         )}
       </section>
+
+      {/* 本轮记住的新信息 */}
+      {memoryItems.length > 0 && (
+        <section className="bg-white rounded-2xl p-4 mb-4">
+          <h2 className="text-base font-semibold mb-2">🧠 这次又记住了</h2>
+          <div className="flex flex-wrap gap-1.5">
+            {memoryItems.map((t, i) => (
+              <span
+                key={i}
+                className="text-xs text-ink bg-brand-light/20 px-2 py-1 rounded-full"
+              >
+                {t}
+              </span>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* 翻车预警 */}
       <section className="bg-warn/10 border border-warn/30 rounded-2xl p-4 mb-6">

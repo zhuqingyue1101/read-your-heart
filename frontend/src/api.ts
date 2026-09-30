@@ -47,6 +47,7 @@ export async function analyzeChat(
     goal: context.goal,
     reply_style: context.reply_style,
     crush_profile_summary: context.crush_profile_summary ?? '',
+    profile: context.profile ?? null,
     swap_sides: swapSides,
   }
 

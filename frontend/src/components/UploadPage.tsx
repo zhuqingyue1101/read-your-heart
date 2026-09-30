@@ -124,6 +124,7 @@ export default function UploadPage({ initialName, initialContext, onBack, onAnal
         goal: combine(goal, goalCustom),
         reply_style: combine(style, styleCustom),
         crush_profile_summary: initialContext?.crush_profile_summary ?? '',
+        profile: initialContext?.profile,
       },
       name.trim(),
     )

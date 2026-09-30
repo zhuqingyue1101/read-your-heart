@@ -7,6 +7,7 @@ interface Props {
   onDelete: (id: string) => void
   onHistory: (session: Session) => void
   onSettings: () => void
+  onProfile: (session: Session) => void
 }
 
 function formatTime(ts: number): string {
@@ -28,6 +29,7 @@ export default function SessionListPage({
   onDelete,
   onHistory,
   onSettings,
+  onProfile,
 }: Props) {
   return (
     <div className="page">
@@ -112,16 +114,28 @@ export default function SessionListPage({
 
               <div className="flex items-center justify-between">
                 <p className="text-xs text-ink-muted">{formatTime(s.updated_at)}</p>
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    onHistory(s)
-                  }}
-                  className="text-xs text-brand"
-                >
-                  历史记录（{s.records?.length ?? 0}）
-                </button>
+                <div className="flex items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      onProfile(s)
+                    }}
+                    className="text-xs text-brand"
+                  >
+                    📋 档案
+                  </button>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      onHistory(s)
+                    }}
+                    className="text-xs text-brand"
+                  >
+                    历史记录（{s.records?.length ?? 0}）
+                  </button>
+                </div>
               </div>
             </div>
           ))}
