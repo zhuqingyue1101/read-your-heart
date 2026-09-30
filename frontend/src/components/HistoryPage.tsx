@@ -35,7 +35,7 @@ function RecordCard({
         <div className="min-w-0">
           <p className="text-base font-semibold leading-snug">{record.conclusion}</p>
           <p className="text-xs text-ink-muted mt-1">
-            {formatTime(record.created_at)} · {record.relationship_stage} · {record.goal}
+            {formatTime(record.created_at)} · {record.relationship_stage} · {record.intent}
           </p>
         </div>
         <button

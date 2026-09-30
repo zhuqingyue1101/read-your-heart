@@ -44,8 +44,7 @@ export async function analyzeChat(
   const payload = {
     images: compressed,
     relationship_stage: context.relationship_stage,
-    goal: context.goal,
-    reply_style: context.reply_style,
+    intent: context.intent,
     crush_profile_summary: context.crush_profile_summary ?? '',
     profile: context.profile ?? null,
     swap_sides: swapSides,

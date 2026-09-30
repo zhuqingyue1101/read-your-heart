@@ -93,8 +93,7 @@ function App() {
         id: newId(),
         created_at: now,
         relationship_stage: context.relationship_stage,
-        goal: context.goal,
-        reply_style: context.reply_style,
+        intent: context.intent,
         conclusion: data.conclusion,
         reasoning_short: data.reasoning_short,
         replies: data.replies,
@@ -116,8 +115,7 @@ function App() {
         id,
         name: name || prev?.name || nextCrushName(),
         relationship_stage: context.relationship_stage,
-        goal: context.goal,
-        reply_style: context.reply_style,
+        intent: context.intent,
         crush_profile_summary: data.crush_profile_update.summary,
         profile: mergeProfile(prev?.profile, data.memory_update),
         latest_status: data.crush_profile_update.latest_status,
@@ -285,8 +283,7 @@ function App() {
   const initialContext = activeSession
     ? {
         relationship_stage: activeSession.relationship_stage,
-        goal: activeSession.goal,
-        reply_style: activeSession.reply_style,
+        intent: activeSession.intent,
         crush_profile_summary: activeSession.crush_profile_summary,
         profile: activeSession.profile,
       }

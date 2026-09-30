@@ -64,8 +64,7 @@ export interface AnalyzeResponse {
 // 上下文选择
 export interface AnalyzeContext {
   relationship_stage: string
-  goal: string
-  reply_style: string
+  intent: string // 这次想怎么回（单选：稳一点/撩一点/推进一点/收一点/幽默一点/冷一点）
   crush_profile_summary?: string // 续读时带入的上次档案摘要
   profile?: CrushProfile // 结构化档案，分析时全量带入
 }
@@ -75,8 +74,7 @@ export interface Session {
   id: string
   name: string // 备注名；为空则自动 "Crush N"
   relationship_stage: string
-  goal: string
-  reply_style: string
+  intent: string // 这次想怎么回（单选）
   crush_profile_summary: string // 上次 crush_profile_update.summary
   profile?: CrushProfile // 结构化 crush 档案（记忆）
   latest_status?: string // 当前关系状态
@@ -93,8 +91,7 @@ export interface AnalysisRecord {
   id: string
   created_at: number
   relationship_stage: string
-  goal: string
-  reply_style: string
+  intent: string
   conclusion: string
   reasoning_short: string
   replies: Reply[]

@@ -10,21 +10,13 @@ const RELATIONSHIP_STAGES = [
   '冷淡期',
   '复联中',
 ]
-const GOALS = [
-  '试探好感',
-  '撩对方',
-  '暧昧一点',
-  '矜持一点',
-  '想打直球',
-  '冷漠一些',
-]
-const REPLY_STYLES = [
-  '自然一点',
-  '可爱一点',
-  '高冷一点',
-  '拽一点',
-  '搞笑一点',
-  '直球一点',
+const INTENTS = [
+  '稳一点',
+  '撩一点',
+  '推进一点',
+  '收一点',
+  '幽默一点',
+  '冷一点',
 ]
 
 const MAX_TAGS = 3
@@ -76,15 +68,10 @@ export default function UploadPage({ initialName, initialContext, onBack, onAnal
   const [name, setName] = useState(initialName ?? '')
 
   const stageInit = parseSelection(initialContext?.relationship_stage, RELATIONSHIP_STAGES, ['暧昧中'])
-  const goalInit = parseSelection(initialContext?.goal, GOALS, ['试探好感'])
-  const styleInit = parseSelection(initialContext?.reply_style, REPLY_STYLES, ['自然一点'])
 
   const [stage, setStage] = useState<string[]>(stageInit.tags)
   const [stageCustom, setStageCustom] = useState(stageInit.custom)
-  const [goal, setGoal] = useState<string[]>(goalInit.tags)
-  const [goalCustom, setGoalCustom] = useState(goalInit.custom)
-  const [style, setStyle] = useState<string[]>(styleInit.tags)
-  const [styleCustom, setStyleCustom] = useState(styleInit.custom)
+  const [intent, setIntent] = useState<string>(initialContext?.intent || '稳一点')
 
   const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -121,8 +108,7 @@ export default function UploadPage({ initialName, initialContext, onBack, onAnal
       images,
       {
         relationship_stage: combine(stage, stageCustom),
-        goal: combine(goal, goalCustom),
-        reply_style: combine(style, styleCustom),
+        intent,
         crush_profile_summary: initialContext?.crush_profile_summary ?? '',
         profile: initialContext?.profile,
       },
@@ -148,7 +134,7 @@ export default function UploadPage({ initialName, initialContext, onBack, onAnal
       {/* 续读提示 */}
       {initialContext && (
         <div className="bg-brand-light/20 border border-brand-light/50 rounded-xl px-3 py-2 text-xs text-ink mb-4">
-          📌 正在续读：{name || '这条线'}（{joinTags(stage)} · {joinTags(goal)}），上次档案已带入
+          📌 正在续读：{name || '这条线'}（{joinTags(stage)} · {intent}），上次档案已带入
         </div>
       )}
 
@@ -255,23 +241,16 @@ export default function UploadPage({ initialName, initialContext, onBack, onAnal
           onCustomChange={setStageCustom}
         />
 
-        <TagField
-          label="这次想达到什么目标？"
-          options={GOALS}
-          selected={goal}
-          onToggle={(tag) => setGoal((prev) => toggleTag(prev, tag))}
-          custom={goalCustom}
-          onCustomChange={setGoalCustom}
-        />
-
-        <TagField
-          label="回复想要什么风格？"
-          options={REPLY_STYLES}
-          selected={style}
-          onToggle={(tag) => setStyle((prev) => toggleTag(prev, tag))}
-          custom={styleCustom}
-          onCustomChange={setStyleCustom}
-        />
+        <div>
+          <p className="text-sm font-semibold mb-2">这次想怎么回？</p>
+          <div className="flex flex-wrap gap-2">
+            {INTENTS.map((o) => (
+              <Chip key={o} active={intent === o} onClick={() => setIntent(o)}>
+                {o}
+              </Chip>
+            ))}
+          </div>
+        </div>
       </div>
 
       {/* 提交 */}
